@@ -1,8 +1,6 @@
 #include "searchbar.h"
-
 #include <QCompleter>
 #include <QTimer>
-
 #include "kiwixapp.h"
 
 SearchButton::SearchButton(QWidget *parent) :
@@ -19,11 +17,11 @@ void SearchButton::set_searchMode(bool searchMode)
     m_searchMode = searchMode;
     if (m_searchMode) {
         setIcon(QIcon(":/icons/search.svg"));
-    } else {
+    } else{
         auto kiwixApp = KiwixApp::instance();
         if (kiwixApp->isCurrentArticleBookmarked()) {
             setIcon(QIcon(":/icons/reading-list-active.svg"));
-        } else {
+        } else{
             setIcon(QIcon(":/icons/reading-list.svg"));
         }
     }
@@ -31,9 +29,8 @@ void SearchButton::set_searchMode(bool searchMode)
 
 void SearchButton::on_buttonClicked()
 {
-    if (m_searchMode)
+    if (m_searchMode)  //Checking if the search box empty or not
         return;
-
     auto kiwixApp = KiwixApp::instance();
     auto library = kiwixApp->getLibrary();
     auto tabWidget = kiwixApp->getTabWidget();
@@ -42,7 +39,7 @@ void SearchButton::on_buttonClicked()
         library->removeBookmark(
             zimid, tabWidget->currentArticleUrl()
         );
-    } else {
+    } else{
         kiwix::Bookmark bookmark;
         auto zimid = tabWidget->currentZimId().toStdString();
         bookmark.setBookId(zimid);
@@ -145,8 +142,7 @@ void SearchBar::openCompletion(const QModelIndex &index)
     auto url = m_urlList.at(index.row());
     QUrl qurl;
     qurl.setScheme("zim");
-    qurl.setHost(m_currentZimId+".zim");
+    qurl.setHost(m_currentZimId+".zim"); //Downloading the correct ZIM file that user entered.
     qurl.setPath(QString::fromStdString(url));
     QTimer::singleShot(0, [=](){KiwixApp::instance()->openUrl(qurl, true);});
 }
-
